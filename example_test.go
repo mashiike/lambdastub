@@ -8,7 +8,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/lambda"
-	lambdasdk "github.com/aws/aws-sdk-go-v2/service/lambda"
 	"github.com/mashiike/lambdastub"
 )
 
@@ -40,7 +39,7 @@ func Example() {
 			}),
 		},
 	)
-	output, err := client.Invoke(context.Background(), &lambdasdk.InvokeInput{
+	output, err := client.Invoke(context.Background(), &lambda.InvokeInput{
 		FunctionName: aws.String("HelloWorldFunction"),
 		Payload:      nil,
 	})
