@@ -42,9 +42,11 @@ func TestInvokeEndpointSuccess(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 	client := NewLambdaClient(server)
+	payload, err := json.Marshal(expectedPayload)
+	require.NoError(t, err)
 	output, err := client.Invoke(context.Background(), &lambdasdk.InvokeInput{
 		FunctionName: aws.String("HelloWorldFunction"),
-		Payload:      Must(json.Marshal(expectedPayload)),
+		Payload:      payload,
 	})
 	require.NoError(t, err)
 	require.JSONEq(t, `{"Name":"name", "Success": true}`, string(output.Payload))
@@ -75,20 +77,15 @@ func TestInvokeEndpointError(t *testing.T) {
 	server := httptest.NewServer(mux)
 	defer server.Close()
 	client := NewLambdaClient(server)
+	payload, err := json.Marshal(expectedPayload)
+	require.NoError(t, err)
 	output, err := client.Invoke(context.Background(), &lambdasdk.InvokeInput{
 		FunctionName: aws.String("HelloWorldFunction"),
-		Payload:      Must(json.Marshal(expectedPayload)),
+		Payload:      payload,
 	})
 	require.NoError(t, err)
 	require.JSONEq(t, `{"errorMessage":"test error", "errorType":"errorString"}`, string(output.Payload))
 	require.EqualValues(t, "errorString", *output.FunctionError)
-}
-
-func Must[T any](t T, err error) T {
-	if err != nil {
-		panic(err)
-	}
-	return t
 }
 
 func NewLambdaClient(server *httptest.Server) *lambdasdk.Client {

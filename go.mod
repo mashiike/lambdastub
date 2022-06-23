@@ -1,6 +1,6 @@
 module github.com/mashiike/lambdastub
 
-go 1.18
+go 1.16
 
 require (
 	github.com/Songmu/flextime v0.1.0
